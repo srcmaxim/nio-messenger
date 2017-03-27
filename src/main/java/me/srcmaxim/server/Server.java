@@ -23,6 +23,7 @@ public class Server {
     private Set<SocketChannel> clientChannels;
     private ServerSocketChannel serverSocket = null;
     private Selector selector = null;
+    private Pattern pattern = Pattern.compile("([A-Z]{4,6})\\s(.*)");
 
     public Server() {
         try {
@@ -92,7 +93,7 @@ public class Server {
     }
 
     private String processRequest(SocketChannel cc, StringBuilder request) throws IOException {
-        Matcher matcher = Pattern.compile("([A-Z]{4,6})\\s(.*)").matcher(request);
+        Matcher matcher = pattern.matcher(request);
         matcher.find();
         String command = matcher.group(1);
         String message = matcher.group(2);
