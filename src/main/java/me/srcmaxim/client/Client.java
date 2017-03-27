@@ -1,17 +1,14 @@
 package me.srcmaxim.client;
 
 import me.srcmaxim.Commands;
+import me.srcmaxim.Properties;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 
 public class Client {
-    public final static int port = 6001;
-    private static final Charset CHARSET = Charset.forName("UTF-8");
-    private String server = "localhost";
     private SocketChannel channel;
     private Boolean connectedToServer = false;
     private Hook hook;
@@ -38,8 +35,8 @@ public class Client {
             if (!channel.isOpen()) {
                 channel = SocketChannel.open();
             }
-            channel.connect(new InetSocketAddress(server, port));
-            System.out.printf("CLIENT LOG: Connecting to %s on port %d%n", server, port);
+            channel.connect(new InetSocketAddress(Properties.host, Properties.port));
+            System.out.printf("CLIENT LOG: Connecting to %s on port %d%n", Properties.host, Properties.port);
             while (!channel.finishConnect()) {
                 try {
                     Thread.sleep(200);
@@ -56,7 +53,7 @@ public class Client {
             sendMessage(Commands.LOGIN, nickname, "");
         } catch (IOException exc) {
             System.out.printf("CLIENT LOG: ERROR -> Problem with connecting to %s, %s%n",
-                    server, exc.getLocalizedMessage());
+                    Properties.host, exc.getLocalizedMessage());
             System.exit(1);
         }
     }
@@ -69,7 +66,7 @@ public class Client {
             sendMessage(Commands.LOGOUT, username, "");
             connectedToServer = false;
         } catch (Exception exc) {
-            System.out.printf("CLIENT LOG: ERROR -> Problem with disconnecting %s%n", server);
+            System.out.printf("CLIENT LOG: ERROR -> Problem with disconnecting %s%n", Properties.host);
             System.exit(3);
         }
     }
@@ -80,7 +77,7 @@ public class Client {
         }
         String messageToSend = commands.name() + " " + nickname + ": " + msg + '\n';
         System.out.printf("CLIENT LOG: Sending message: %s%n", messageToSend);
-        ByteBuffer messageByteBuffer = ByteBuffer.wrap(messageToSend.getBytes(CHARSET));
+        ByteBuffer messageByteBuffer = ByteBuffer.wrap(messageToSend.getBytes(Properties.CHARSET));
         try {
             channel.write(messageByteBuffer);
         } catch (IOException e) {

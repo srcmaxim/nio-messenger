@@ -1,6 +1,7 @@
 package me.srcmaxim.server;
 
 import me.srcmaxim.Commands;
+import me.srcmaxim.Properties;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,7 +10,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -18,23 +18,18 @@ import java.util.regex.Pattern;
 
 public class Server {
 
-    private static final Charset CHARSET = Charset.forName("UTF-8");
-    private static final int BSIZE = 1024;
-    private ByteBuffer buffer = ByteBuffer.allocate(BSIZE);
+    private ByteBuffer buffer = ByteBuffer.allocate(Properties.BSIZE);
 
     private Set<SocketChannel> clientChannels;
     private ServerSocketChannel serverSocket = null;
     private Selector selector = null;
-    private String host = "localhost";
-
-    private int port = 6001;
 
     public Server() {
         try {
             clientChannels = new HashSet<>();
             serverSocket = ServerSocketChannel.open();
             serverSocket.configureBlocking(false);
-            serverSocket.socket().bind(new InetSocketAddress(host, port));
+            serverSocket.socket().bind(new InetSocketAddress(Properties.host, Properties.port));
             selector = Selector.open();
             serverSocket.register(selector, SelectionKey.OP_ACCEPT);
         } catch (Exception exc) {
@@ -81,7 +76,7 @@ public class Server {
             while (cc.read(buffer) > 0) {
                 buffer.flip();
                 request.append(new String(buffer.array(), buffer.position(),
-                        buffer.limit(), CHARSET));
+                        buffer.limit(), Properties.CHARSET));
                 buffer.clear();
             }
             String message = processRequest(cc, request);
@@ -123,7 +118,7 @@ public class Server {
     private void write(String massage) throws IOException {
         for (Iterator<SocketChannel> i = clientChannels.iterator(); i.hasNext(); ) {
             SocketChannel client = i.next();
-            ByteBuffer encodedMessage = ByteBuffer.wrap(massage.getBytes(CHARSET));
+            ByteBuffer encodedMessage = ByteBuffer.wrap(massage.getBytes(Properties.CHARSET));
             if (client.isConnected()) {
                 client.write(encodedMessage);
             } else {
