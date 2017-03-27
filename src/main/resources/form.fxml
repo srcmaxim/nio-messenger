@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<BorderPane id="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="266.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.srcmaxim.client.MainForm">
+   <top>
+      <AnchorPane prefHeight="189.0" prefWidth="266.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutY="30.0" prefHeight="45.0" prefWidth="270.0" text="NIO MESSENGER" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+               <textFill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop color="#f50000" />
+                        <Stop color="BLACK" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+            </Label>
+            <Button layoutX="58.0" layoutY="90.0" mnemonicParsing="false" onAction="#loginAction" prefHeight="25.0" prefWidth="150.0" text="LOGIN" />
+            <Button layoutX="58.0" layoutY="120.0" mnemonicParsing="false" onAction="#logoutAction" prefHeight="25.0" prefWidth="150.0" text="LOGOUT" />
+            <TextField fx:id="username" layoutX="59.0" layoutY="152.0" promptText="username" />
+         </children>
+      </AnchorPane>
+   </top>
+   <center>
+      <Pane prefHeight="84.0" prefWidth="266.0" scaleShape="false" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="message" layoutX="14.0" layoutY="14.0" onKeyPressed="#sendActionEnter" prefHeight="25.0" prefWidth="238.0" promptText="message" />
+            <Button layoutX="14.0" layoutY="49.0" mnemonicParsing="false" onAction="#sendAction" prefHeight="25.0" prefWidth="116.0" text="SEND" />
+         </children>
+      </Pane>
+   </center>
+   <bottom>
+      <TextArea fx:id="messageQueue" prefHeight="290.0" prefWidth="266.0" promptText="massage queue" wrapText="true" BorderPane.alignment="CENTER" />
+   </bottom>
+</BorderPane>
