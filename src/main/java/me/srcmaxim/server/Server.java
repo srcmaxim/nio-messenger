@@ -34,10 +34,11 @@ public class Server {
             selector = Selector.open();
             serverSocket.register(selector, SelectionKey.OP_ACCEPT);
         } catch (Exception exc) {
+            System.out.println("SERVER LOG: EXIT");
             exc.printStackTrace();
             System.exit(1);
         }
-        System.out.println("SERVER LOG: Server started and ready for handling requests");
+        System.out.println("SERVER R LOG: Server started and ready for handling requests");
     }
 
     public void run() {
@@ -83,7 +84,8 @@ public class Server {
             String message = processRequest(cc, request);
             write(message);
         } catch (Exception exc) {
-            exc.printStackTrace();
+            clientChannels.remove(cc);
+            System.out.println("SERVER E LOG: " + exc.getMessage());
             try {
                 cc.close();
                 cc.socket().close();
@@ -100,15 +102,15 @@ public class Server {
         Commands commands = Commands.valueOf(command);
         switch (commands) {
             case LOGIN:
-                System.out.printf("SERVER LOG: %s %s%n", message, Commands.LOGIN);
+                System.out.printf("SERVER A LOG: %s %s%n", message, Commands.LOGIN);
                 return message + Commands.LOGIN;
             case SEND:
-                System.out.printf("SERVER LOG: %s %s%n", Commands.SEND, message);
+                System.out.printf("SERVER B LOG: %s %s%n", Commands.SEND, message);
                 return message;
             case LOGOUT:
                 clientChannels.remove(cc);
                 cc.close();
-                System.out.printf("SERVER LOG: %s %s%n", message, Commands.LOGOUT);
+                System.out.printf("SERVER C LOG: %s %s%n", message, Commands.LOGOUT);
                 return message + Commands.LOGOUT;
             default:
                 System.out.println("INVALID COMMAND!");
@@ -116,16 +118,20 @@ public class Server {
         }
     }
 
-    private void write(String massage) throws IOException {
-        for (Iterator<SocketChannel> i = clientChannels.iterator(); i.hasNext(); ) {
-            SocketChannel client = i.next();
-            ByteBuffer encodedMessage = ByteBuffer.wrap(massage.getBytes(Properties.CHARSET));
-            if (client.isConnected()) {
-                client.write(encodedMessage);
-            } else {
+    private void write(String massage) {
+        for (Iterator<SocketChannel> i = clientChannels.iterator(); i.hasNext(); )
+            try {
+                SocketChannel client = i.next();
+                ByteBuffer encodedMessage = ByteBuffer.wrap(massage.getBytes(Properties.CHARSET));
+                if (client.isConnected()) {
+                    client.write(encodedMessage);
+                } else {
+                    i.remove();
+                }
+            } catch (IOException e) {
+                System.out.println("SERVER D LOG: " + e.getMessage());
                 i.remove();
             }
-        }
     }
 
     public static void main(String[] args) {

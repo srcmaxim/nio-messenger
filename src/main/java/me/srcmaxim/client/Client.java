@@ -106,7 +106,8 @@ public class Client {
                 channel.socket().close();
                 System.out.println("CLIENT LOG: Server logout!");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("CLIENT LOG: " + e.getMessage());
+                connectedToServer = false;
             }
         }
     }
