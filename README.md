@@ -45,5 +45,5 @@ which is used to examine the status of file descriptors in Unix.
 
 Links:
 - [reactor pattern](http://kasunpanorama.blogspot.com/2015/04/understanding-reactor-pattern-with-java.html)
-- [java nio](ttp://gee.cs.oswego.edu/dl/cpjslides/nio.pdf)
+- [java nio](http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf)
 
